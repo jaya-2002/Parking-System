@@ -1,0 +1,67 @@
+
+#define trigPin 2
+#define echoPin 3
+#define blue 4
+#define green 8
+#define yellow 9
+#define buzzer 13
+int range = 15; //inches
+void setup(){
+  Serial.begin(9600);
+  pinMode(trigPin,OUTPUT); // Sends the rays
+  pinMode(echoPin,INPUT); // Recieves the rays ,time
+  pinMode(4,OUTPUT);
+  pinMode(green,OUTPUT);
+  pinMode(yellow,OUTPUT);
+  pinMode(buzzer,OUTPUT);
+}
+
+void loop(){
+ long duration,inches,cm;
+ digitalWrite(trigPin,LOW);
+ delayMicroseconds(2);
+ digitalWrite(trigPin,HIGH);
+ delayMicroseconds(5);
+ digitalWrite(trigPin,LOW);
+ duration = pulseIn(echoPin,HIGH);
+ inches = microsecondsToinches(duration);
+  cm = microsecondsToCentimeters(duration);
+
+Serial.print(inches);
+Serial.print("in :");
+Serial.print(cm);
+Serial.print("cm :");
+Serial.println();
+
+if(inches <10 & inches >=7){
+  digitalWrite(green,LOW);
+  Serial.println("Safe");
+  digitalWrite(blue,HIGH);
+  delay(1000);
+  digitalWrite(blue,LOW);
+  }
+  if(inches <7 & inches >=5){
+    digitalWrite(green,LOW);
+    Serial.println("Yellow");
+    digitalWrite(yellow,HIGH);
+    delay(1000);
+    digitalWrite(yellow,LOW);
+    tone(buzzer,200,100);
+    delay(1000);
+  }
+  if(inches <5 & inches >=1){
+    Serial.println("Danger");
+    digitalWrite(green,HIGH);
+    tone(buzzer,400,duration);
+    
+  }
+  delay(200);
+  }
+
+  long microsecondsToinches(long microseconds){
+    return microseconds /74/2;
+  }
+
+   long microsecondsToCentimeters(long microseconds){
+    return microseconds /29/2;
+  }
